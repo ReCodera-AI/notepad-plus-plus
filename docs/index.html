@@ -60,16 +60,6 @@
     .button-secondary { border-color: rgba(238, 245, 243, .45); color: var(--paper); background: rgba(9, 19, 30, .35); }
     .button-secondary:hover { border-color: var(--paper); background: rgba(9, 19, 30, .65); }
     .hero-foot { position: absolute; right: 22px; bottom: 19px; color: rgba(238,245,243,.7); font-size: 11px; }
-    .cover-picker { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 4px 0; }
-    .cover-picker p { margin: 0; color: var(--muted); font-size: 12px; }
-    .cover-options { display: flex; gap: 9px; }
-    .cover-option {
-      position: relative; width: 108px; height: 59px; padding: 0; overflow: hidden;
-      border: 1px solid var(--line); border-radius: 4px; background: #111e2c; cursor: pointer;
-    }
-    .cover-option img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: .72; transition: opacity .16s ease; }
-    .cover-option:hover img, .cover-option[aria-pressed="true"] img { opacity: 1; }
-    .cover-option[aria-pressed="true"] { border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
     main section { padding: 104px 0 0; }
     .section-head { max-width: 700px; margin-bottom: 36px; }
     .section-head p { margin: 0 0 12px; color: var(--green); font-size: 12px; font-weight: 650; letter-spacing: .04em; }
@@ -96,9 +86,9 @@
       nav { gap: 13px; }
       nav a:not(.nav-cta) { display: none; }
       .hero-copy { grid-template-columns: 1fr; padding: 25px 22px 27px; }
-      .hero-copy > p { grid-column: 2; font-size: 15px; }
-      .cover-picker { align-items: flex-start; flex-direction: column; gap: 12px; }
-      .cover-option { width: 94px; height: 54px; }
+      .hero-heading { grid-row: auto; }
+      .hero-copy > p { grid-column: 1; font-size: 15px; }
+      .hero-copy .actions { grid-column: 1; }
       main section { padding-top: 76px; }
       .fixes { grid-template-columns: 1fr; }
       .fix { min-height: auto; }
@@ -127,7 +117,7 @@
 
   <div id="top" class="shell hero-wrap">
     <section class="hero" id="hero" aria-labelledby="hero-title">
-      <img class="hero-art" src="assets/covers/cover-chameleon-ribbon-branded.png" alt="Notepad++ and ReCodera-AI Community Build wordmark over emerald chameleon code artwork">
+      <img class="hero-art" src="assets/covers/cover-neon-chameleon.png" alt="Notepad++ and ReCodera-AI Community Build wordmark over emerald chameleon code artwork">
       <div class="hero-copy">
         <div class="hero-heading">
           <h1 id="hero-title">Notepad++</h1>
@@ -141,14 +131,6 @@
         </div>
       </div>
     </section>
-    <div class="cover-picker" aria-label="Choose cover artwork">
-      <p>Choose a cover direction</p>
-      <div class="cover-options">
-        <button class="cover-option" type="button" data-cover="cover-chameleon-ribbon-branded.png" aria-label="Show chameleon ribbon cover" aria-pressed="true"><img src="assets/covers/cover-chameleon-ribbon-branded.png" alt=""></button>
-        <button class="cover-option" type="button" data-cover="cover-code-architecture.png" aria-label="Show code architecture cover" aria-pressed="false"><img src="assets/covers/cover-code-architecture.png" alt=""></button>
-        <button class="cover-option" type="button" data-cover="cover-paper-ribbon.png" aria-label="Show paper ribbon cover" aria-pressed="false"><img src="assets/covers/cover-paper-ribbon.png" alt=""></button>
-      </div>
-    </div>
   </div>
 
   <main class="shell">
@@ -224,17 +206,5 @@
       <span><a href="https://github.com/ReCodera-AI/notepad-plus-plus">ReCodera-AI source</a> &nbsp;·&nbsp; <a href="https://github.com/notepad-plus-plus/notepad-plus-plus">Upstream project</a></span>
     </div>
   </footer>
-  <script>
-    const heroArt = document.querySelector(".hero-art");
-    const covers = document.querySelectorAll(".cover-option");
-    for (const button of covers) {
-      button.addEventListener("click", () => {
-        const cover = button.dataset.cover;
-        heroArt.src = `assets/covers/${cover}`;
-        heroArt.alt = button.getAttribute("aria-label").replace(/^Show /, "");
-        for (const option of covers) option.setAttribute("aria-pressed", String(option === button));
-      });
-    }
-  </script>
 </body>
 </html>
