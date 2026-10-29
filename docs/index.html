@@ -45,7 +45,7 @@
     .nav-cta { padding: 9px 15px; border: 1px solid rgba(98, 228, 155, .6); border-radius: 5px; color: var(--green); }
     .hero-wrap { padding: 8px 0 0; }
     .hero {
-      --cover: url("assets/covers/cover-chameleon-ribbon.png");
+      --cover: url("assets/covers/cover-chameleon-ribbon-branded.png");
       position: relative; isolation: isolate; overflow: hidden;
       min-height: 510px; display: flex; align-items: center;
       border: 1px solid rgba(218, 235, 229, .16); border-radius: 9px;
@@ -64,6 +64,16 @@
     .hero-mark span { color: #d8e4e5; font-size: 13px; }
     h1 { max-width: 600px; margin: 0; font-size: clamp(42px, 7vw, 76px); line-height: .99; letter-spacing: -.065em; font-weight: 680; }
     .project-name { margin: 17px 0 0; color: var(--green); font-size: clamp(17px, 2vw, 21px); font-weight: 600; }
+    .version-badge { display:inline-flex; align-items:center; gap:8px; margin-top:12px; padding:7px 13px; border:1px solid rgba(98,228,155,.45); border-radius:999px; color:#092015; background:linear-gradient(120deg,#7bf0ad,#c9f36d); box-shadow:0 6px 22px rgba(98,228,155,.2); font-size:12px; font-weight:800; letter-spacing:.055em; }
+    .hero { display:block; min-height:0; background:#101d2a; }
+    .hero::after { display:none; }
+    .hero-art { display:block; width:100%; height:auto; }
+    .hero-copy { display:flex; width:100%; align-items:center; gap:20px; flex-wrap:wrap; padding:20px 28px 26px; }
+    .hero-mark, .hero-copy h1, .project-name, .hero-foot { display:none; }
+    .hero-copy > p { flex:1 1 390px; margin:0; color:#e4ebec; font-size:15px; }
+    .hero-copy .version-badge { margin:0; flex:0 0 auto; }
+    .hero-copy .actions { margin:0; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
     .hero-copy > p { max-width: 560px; margin: 22px 0 0; color: #e4ebec; font-size: 17px; line-height: 1.65; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
     .button { display: inline-flex; align-items: center; justify-content: center; min-height: 45px; padding: 0 17px; border: 1px solid transparent; border-radius: 5px; text-decoration: none; font-size: 14px; font-weight: 650; transition: background-color .16s ease, border-color .16s ease; }
@@ -124,6 +134,10 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
     }
+    @media (max-width: 760px) {
+      .hero { min-height: 0; }
+      .hero-copy { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
@@ -134,6 +148,7 @@
     </a>
     <nav aria-label="Main navigation">
       <a href="#changes">What changed</a>
+      <a href="#downloads">Downloads</a>
       <a href="#project">About the project</a>
       <a class="nav-cta" href="https://github.com/ReCodera-AI/notepad-plus-plus/releases">Releases</a>
     </nav>
@@ -141,13 +156,10 @@
 
   <div id="top" class="shell hero-wrap">
     <section class="hero" id="hero" aria-labelledby="hero-title">
+      <img class="hero-art" src="assets/covers/cover-chameleon-ribbon-branded.png" alt="Notepad++ and ReCodera-AI Community Build wordmark over emerald chameleon code artwork">
+      <h1 class="sr-only" id="hero-title">Notepad++</h1>
       <div class="hero-copy">
-        <div class="hero-mark">
-          <img src="assets/notepad-plus-plus-icon.png" alt="Notepad++ chameleon and pencil application icon">
-          <span>Independent community build<br>Built on the original open-source project</span>
-        </div>
-        <h1 id="hero-title">Notepad++</h1>
-        <p class="project-name">ReCodera-AI Community Build</p>
+        <span class="version-badge">Version 8.9.8.2</span>
         <p>Focused fixes for real editor workflows, shaped through careful engineering and AI-assisted verification.</p>
         <div class="actions">
           <a class="button button-primary" href="https://github.com/ReCodera-AI/notepad-plus-plus/releases">View community releases</a>
@@ -159,7 +171,7 @@
     <div class="cover-picker" aria-label="Choose cover artwork">
       <p>Choose a cover direction</p>
       <div class="cover-options">
-        <button class="cover-option" type="button" data-cover="cover-chameleon-ribbon.png" aria-label="Show chameleon ribbon cover" aria-pressed="true"><img src="assets/covers/cover-chameleon-ribbon.png" alt=""></button>
+        <button class="cover-option" type="button" data-cover="cover-chameleon-ribbon-branded.png" aria-label="Show chameleon ribbon cover" aria-pressed="true"><img src="assets/covers/cover-chameleon-ribbon-branded.png" alt=""></button>
         <button class="cover-option" type="button" data-cover="cover-code-architecture.png" aria-label="Show code architecture cover" aria-pressed="false"><img src="assets/covers/cover-code-architecture.png" alt=""></button>
         <button class="cover-option" type="button" data-cover="cover-paper-ribbon.png" aria-label="Show paper ribbon cover" aria-pressed="false"><img src="assets/covers/cover-paper-ribbon.png" alt=""></button>
       </div>
@@ -192,6 +204,18 @@
       </div>
     </section>
 
+    <section id="downloads" aria-labelledby="downloads-title">
+      <div class="section-head">
+        <p>Release availability</p>
+        <h2 id="downloads-title">Download status</h2>
+        <p class="lede">This community release currently contains source code and release notes only. No verified application packages are attached.</p>
+      </div>
+      <div class="fixes">
+        <article class="fix"><h3>Windows</h3><p>Notepad++ is a Windows application. The upstream project publishes standard, x64, and ARM64 installers, plus x64 and ARM64 portable archives. This community release has not built or verified those packages, so none is attached.</p></article>
+        <article class="fix"><h3>macOS</h3><p>No native macOS build is provided by the original Notepad++ project or this community release. There is no Mac download.</p></article>
+        <article class="fix"><h3>Linux</h3><p>No native Linux build is provided by this release. Do not use Windows installers on Linux.</p></article>
+      </div>
+    </section>
     <section id="project" class="mission" aria-labelledby="project-title">
       <div>
         <div class="section-head">
