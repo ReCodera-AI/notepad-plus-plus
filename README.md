@@ -1,9 +1,7 @@
 <div align="center">
-  <img src="docs/assets/covers/cover-chameleon-ribbon.png" alt="Emerald code ribbon curling around an editor page on a midnight background" width="100%">
-  <br><br>
-  <img src="docs/assets/notepad-plus-plus-icon.png" alt="Notepad++ chameleon and pencil icon" width="88">
-  <h1>Notepad++</h1>
-  <p><strong>ReCodera-AI Community Build</strong></p>
+  <img src="docs/assets/covers/cover-chameleon-ribbon-branded.png" alt="Notepad++ and ReCodera-AI Community Build wordmark over emerald chameleon code artwork" width="100%">
+  <br>
+  <p><img alt="Community Version 8.9.8.2" src="https://img.shields.io/badge/Community%20Version-v8.9.8.2-62e49b?style=for-the-badge&labelColor=111e2c"></p>
   <p>Careful, AI-assisted improvements to an editor trusted by developers around the world.</p>
   <p>
     <a href="https://github.com/ReCodera-AI/notepad-plus-plus/releases">ReCodera-AI Releases</a>
@@ -32,11 +30,11 @@ The fixes are implemented in the editor and Scintilla rendering paths. See the [
 
 ## Choose A Cover
 
-Three original cover-art options are included in the [project homepage](https://recodera-ai.github.io/notepad-plus-plus/). Each option presents the Notepad++ name and icon with the ReCodera-AI project name, without a version number. The site deploys from `docs/` through GitHub Actions; enable **Settings → Pages → Build and deployment → Source: GitHub Actions** once in the repository settings.
+Three original cover-art options are included in the [project homepage](https://recodera-ai.github.io/notepad-plus-plus/). The selected cover prints the Notepad++ name and ReCodera-AI project name directly into the artwork; the page displays the community version below it. The first Pages run failed because Pages was not enabled in repository settings. Follow [the deployment steps](docs/DEPLOYMENT.md) to enable **GitHub Actions** as the Pages source.
 
 | Option | Artwork |
 | --- | --- |
-| Chameleon Ribbon | `docs/assets/covers/cover-chameleon-ribbon.png` |
+| Chameleon Ribbon | `docs/assets/covers/cover-chameleon-ribbon-branded.png` |
 | Code Architecture | `docs/assets/covers/cover-code-architecture.png` |
 | Paper Ribbon | `docs/assets/covers/cover-paper-ribbon.png` |
 

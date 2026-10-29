@@ -43,28 +43,16 @@
     nav a { text-decoration: none; }
     nav a:hover { color: var(--green); }
     .nav-cta { padding: 9px 15px; border: 1px solid rgba(98, 228, 155, .6); border-radius: 5px; color: var(--green); }
-    .hero-wrap { padding: 8px 0 0; }
-    .hero {
-      --cover: url("assets/covers/cover-chameleon-ribbon.png");
-      position: relative; isolation: isolate; overflow: hidden;
-      min-height: 510px; display: flex; align-items: center;
-      border: 1px solid rgba(218, 235, 229, .16); border-radius: 9px;
-      background-color: #101d2a;
-      background-image: linear-gradient(90deg, rgba(6, 14, 24, .94) 0%, rgba(6, 14, 24, .77) 37%, rgba(6, 14, 24, .13) 76%), var(--cover);
-      background-position: center, center;
-      background-size: cover;
-    }
-    .hero::after {
-      content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-      background: linear-gradient(0deg, rgba(7, 16, 26, .34), transparent 38%);
-    }
-    .hero-copy { width: min(640px, 66%); padding: 64px 68px; }
-    .hero-mark { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
-    .hero-mark img { width: 60px; height: 60px; object-fit: contain; background: #fff; border: 4px solid rgba(255,255,255,.92); border-radius: 15px; }
-    .hero-mark span { color: #d8e4e5; font-size: 13px; }
-    h1 { max-width: 600px; margin: 0; font-size: clamp(42px, 7vw, 76px); line-height: .99; letter-spacing: -.065em; font-weight: 680; }
-    .project-name { margin: 17px 0 0; color: var(--green); font-size: clamp(17px, 2vw, 21px); font-weight: 600; }
-    .hero-copy > p { max-width: 560px; margin: 22px 0 0; color: #e4ebec; font-size: 17px; line-height: 1.65; }
+    .hero-wrap { padding: 12px 0 0; }
+    .hero { overflow: hidden; border: 1px solid rgba(218, 235, 229, .16); border-radius: 12px; background: #101d2a; box-shadow: 0 28px 70px rgba(0,0,0,.24); }
+    .hero-art { display: block; width: 100%; height: auto; aspect-ratio: 16 / 8.5; object-fit: cover; }
+    .hero-copy { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .9fr); align-items: center; gap: 14px 34px; padding: 28px 34px 32px; background: linear-gradient(120deg, #132536, #0e1a27); }
+    .hero-heading { grid-column: 1; grid-row: 1 / span 2; min-width: 0; }
+    h1 { margin: 0; font-size: clamp(38px, 5.4vw, 62px); line-height: 1; letter-spacing: -.06em; font-weight: 720; }
+    .project-name { display: block; margin-top: 8px; color: #c3d1d5; font-size: 14px; letter-spacing: .02em; }
+    .version-badge { display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; padding: 7px 14px; border: 1px solid rgba(98,228,155,.5); border-radius: 999px; color: #092015; background: linear-gradient(115deg,#75edaa,#d4f36c); box-shadow: 0 5px 20px rgba(98,228,155,.17); font-size: 12px; font-weight: 800; letter-spacing: .06em; }
+    .hero-copy > p { grid-column: 2; max-width: 610px; margin: 0; color: #d2dfe2; font-size: 15px; line-height: 1.7; }
+    .hero-copy .actions { grid-column: 2; margin-top: 0; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
     .button { display: inline-flex; align-items: center; justify-content: center; min-height: 45px; padding: 0 17px; border: 1px solid transparent; border-radius: 5px; text-decoration: none; font-size: 14px; font-weight: 650; transition: background-color .16s ease, border-color .16s ease; }
     .button-primary { background: var(--green); color: #092015; }
@@ -72,16 +60,6 @@
     .button-secondary { border-color: rgba(238, 245, 243, .45); color: var(--paper); background: rgba(9, 19, 30, .35); }
     .button-secondary:hover { border-color: var(--paper); background: rgba(9, 19, 30, .65); }
     .hero-foot { position: absolute; right: 22px; bottom: 19px; color: rgba(238,245,243,.7); font-size: 11px; }
-    .cover-picker { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 16px 4px 0; }
-    .cover-picker p { margin: 0; color: var(--muted); font-size: 12px; }
-    .cover-options { display: flex; gap: 9px; }
-    .cover-option {
-      position: relative; width: 108px; height: 59px; padding: 0; overflow: hidden;
-      border: 1px solid var(--line); border-radius: 4px; background: #111e2c; cursor: pointer;
-    }
-    .cover-option img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: .72; transition: opacity .16s ease; }
-    .cover-option:hover img, .cover-option[aria-pressed="true"] img { opacity: 1; }
-    .cover-option[aria-pressed="true"] { border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
     main section { padding: 104px 0 0; }
     .section-head { max-width: 700px; margin-bottom: 36px; }
     .section-head p { margin: 0 0 12px; color: var(--green); font-size: 12px; font-weight: 650; letter-spacing: .04em; }
@@ -107,13 +85,10 @@
       .topbar { min-height: 70px; }
       nav { gap: 13px; }
       nav a:not(.nav-cta) { display: none; }
-      .hero { min-height: 590px; align-items: end; background-position: center, 57% center; }
-      .hero-copy { width: 100%; padding: 35px 25px 46px; }
-      .hero-mark { margin-bottom: 19px; }
-      .hero-copy > p { font-size: 15px; }
-      .hero-foot { right: 14px; bottom: 11px; }
-      .cover-picker { align-items: flex-start; flex-direction: column; gap: 12px; }
-      .cover-option { width: 94px; height: 54px; }
+      .hero-copy { grid-template-columns: 1fr; padding: 25px 22px 27px; }
+      .hero-heading { grid-row: auto; }
+      .hero-copy > p { grid-column: 1; font-size: 15px; }
+      .hero-copy .actions { grid-column: 1; }
       main section { padding-top: 76px; }
       .fixes { grid-template-columns: 1fr; }
       .fix { min-height: auto; }
@@ -134,6 +109,7 @@
     </a>
     <nav aria-label="Main navigation">
       <a href="#changes">What changed</a>
+      <a href="#downloads">Downloads</a>
       <a href="#project">About the project</a>
       <a class="nav-cta" href="https://github.com/ReCodera-AI/notepad-plus-plus/releases">Releases</a>
     </nav>
@@ -141,29 +117,20 @@
 
   <div id="top" class="shell hero-wrap">
     <section class="hero" id="hero" aria-labelledby="hero-title">
+      <img class="hero-art" src="assets/covers/cover-neon-chameleon.png" alt="Notepad++ and ReCodera-AI Community Build wordmark over emerald chameleon code artwork">
       <div class="hero-copy">
-        <div class="hero-mark">
-          <img src="assets/notepad-plus-plus-icon.png" alt="Notepad++ chameleon and pencil application icon">
-          <span>Independent community build<br>Built on the original open-source project</span>
+        <div class="hero-heading">
+          <h1 id="hero-title">Notepad++</h1>
+          <span class="project-name">ReCodera-AI Community Build</span>
+          <span class="version-badge">Version 8.9.8.2</span>
         </div>
-        <h1 id="hero-title">Notepad++</h1>
-        <p class="project-name">ReCodera-AI Community Build</p>
         <p>Focused fixes for real editor workflows, shaped through careful engineering and AI-assisted verification.</p>
         <div class="actions">
           <a class="button button-primary" href="https://github.com/ReCodera-AI/notepad-plus-plus/releases">View community releases</a>
           <a class="button button-secondary" href="https://github.com/ReCodera-AI/notepad-plus-plus">Explore the source</a>
         </div>
       </div>
-      <span class="hero-foot">Artwork created for the ReCodera-AI community build</span>
     </section>
-    <div class="cover-picker" aria-label="Choose cover artwork">
-      <p>Choose a cover direction</p>
-      <div class="cover-options">
-        <button class="cover-option" type="button" data-cover="cover-chameleon-ribbon.png" aria-label="Show chameleon ribbon cover" aria-pressed="true"><img src="assets/covers/cover-chameleon-ribbon.png" alt=""></button>
-        <button class="cover-option" type="button" data-cover="cover-code-architecture.png" aria-label="Show code architecture cover" aria-pressed="false"><img src="assets/covers/cover-code-architecture.png" alt=""></button>
-        <button class="cover-option" type="button" data-cover="cover-paper-ribbon.png" aria-label="Show paper ribbon cover" aria-pressed="false"><img src="assets/covers/cover-paper-ribbon.png" alt=""></button>
-      </div>
-    </div>
   </div>
 
   <main class="shell">
@@ -192,6 +159,18 @@
       </div>
     </section>
 
+    <section id="downloads" aria-labelledby="downloads-title">
+      <div class="section-head">
+        <p>Release availability</p>
+        <h2 id="downloads-title">Download status</h2>
+        <p class="lede">This community release currently contains source code and release notes only. No verified application packages are attached.</p>
+      </div>
+      <div class="fixes">
+        <article class="fix"><h3>Windows</h3><p>The upstream release offers standard, x64, and ARM64 installers; an x64 MSI; and portable 7z/ZIP packages for x86, x64, and ARM64, including minimalist archives. This community release is source-only: no installer or archive has been built and verified. <a href="https://github.com/notepad-plus-plus/notepad-plus-plus/releases/latest">See upstream package files</a>.</p></article>
+        <article class="fix"><h3>macOS</h3><p>No native macOS build is provided by the original Notepad++ project or this community release. There is no Mac download.</p></article>
+        <article class="fix"><h3>Linux</h3><p>No native Linux build is provided by this release. Do not use Windows installers on Linux.</p></article>
+      </div>
+    </section>
     <section id="project" class="mission" aria-labelledby="project-title">
       <div>
         <div class="section-head">
@@ -227,15 +206,5 @@
       <span><a href="https://github.com/ReCodera-AI/notepad-plus-plus">ReCodera-AI source</a> &nbsp;·&nbsp; <a href="https://github.com/notepad-plus-plus/notepad-plus-plus">Upstream project</a></span>
     </div>
   </footer>
-  <script>
-    const hero = document.getElementById("hero");
-    const covers = document.querySelectorAll(".cover-option");
-    for (const button of covers) {
-      button.addEventListener("click", () => {
-        hero.style.setProperty("--cover", `url("assets/covers/${button.dataset.cover}")`);
-        for (const option of covers) option.setAttribute("aria-pressed", String(option === button));
-      });
-    }
-  </script>
 </body>
 </html>
