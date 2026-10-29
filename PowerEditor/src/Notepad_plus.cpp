@@ -5392,6 +5392,10 @@ void Notepad_plus::dynamicCheckMenuAndTB() const
 	//Format conversion
 	enableConvertMenuItems(_pEditView->getCurrentBuffer()->getEolFormat());
 	checkUnicodeMenuItems();
+
+	const bool isRTL = _pEditView->getCurrentBuffer()->isRTL();
+	checkMenuItem(IDM_EDIT_RTL, isRTL);
+	checkMenuItem(IDM_EDIT_LTR, !isRTL);
 }
 
 

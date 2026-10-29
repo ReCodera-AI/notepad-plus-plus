@@ -372,6 +372,7 @@ public:
 	void Copy(PRectangle rc, Point from, Surface &surfaceSource) override;
 
 	std::unique_ptr<IScreenLineLayout> Layout(const IScreenLine *screenLine) override;
+	bool DrawLayout(IScreenLineLayout *layout, Point origin, PRectangle clip, ColourRGBA fore) override;
 
 	void DrawTextCommon(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, int codePageOverride, UINT fuOptions);
 
@@ -1033,6 +1034,7 @@ public:
 	size_t PositionFromX(XYPOSITION xDistance, bool charPosition) override;
 	XYPOSITION XFromPosition(size_t caretPosition) override;
 	std::vector<Interval> FindRangeIntervals(size_t start, size_t end) override;
+	IDWriteTextLayout *TextLayoutObject() const noexcept { return textLayout.Get(); }
 };
 
 // Each char can have its own style, so we fill the textLayout with the textFormat of each char
@@ -1099,9 +1101,9 @@ void ScreenLineLayout::FillTextLayoutFormats(const IScreenLine *screenLine, IDWr
 
 		textLayout->SetFontStretch(pfm->pTextFormat->GetFontStretch(), textRange);
 
-		IDWriteFontCollection *fontCollection = nullptr;
-		if (SUCCEEDED(pfm->pTextFormat->GetFontCollection(&fontCollection))) {
-			textLayout->SetFontCollection(fontCollection, textRange);
+		ComPtr<IDWriteFontCollection> fontCollection;
+		if (SUCCEEDED(pfm->pTextFormat->GetFontCollection(fontCollection.GetAddressOf()))) {
+			textLayout->SetFontCollection(fontCollection.Get(), textRange);
 		}
 
 		bytePosition += byteCount;
@@ -1151,6 +1153,10 @@ ScreenLineLayout::ScreenLineLayout(const IScreenLine *screenLine) {
 	if (!textLayout) {
 		return;
 	}
+
+	// Scintilla has already chosen this visual subline. DirectWrite must not wrap
+	// it again when the line is wider than the viewport.
+	textLayout->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 
 	// Fill the textLayout chars with their own formats
 	FillTextLayoutFormats(screenLine, textLayout.Get(), blobs);
@@ -1296,6 +1302,20 @@ std::vector<Interval> ScreenLineLayout::FindRangeIntervals(size_t start, size_t 
 
 std::unique_ptr<IScreenLineLayout> SurfaceD2D::Layout(const IScreenLine *screenLine) {
 	return std::make_unique<ScreenLineLayout>(screenLine);
+}
+
+bool SurfaceD2D::DrawLayout(IScreenLineLayout *layout, Point origin, PRectangle clip, ColourRGBA fore) {
+	const auto *screenLayout = dynamic_cast<const ScreenLineLayout *>(layout);
+	if (!screenLayout || !screenLayout->TextLayoutObject() || !pRenderTarget)
+		return false;
+	D2DPenColourAlpha(fore);
+	if (!pBrush)
+		return false;
+	const D2D1_RECT_F rcClip = RectangleFromPRectangle(clip);
+	pRenderTarget->PushAxisAlignedClip(rcClip, D2D1_ANTIALIAS_MODE_ALIASED);
+	pRenderTarget->DrawTextLayout(DPointFromPoint(origin), screenLayout->TextLayoutObject(), pBrush.Get(), d2dDrawTextOptions);
+	pRenderTarget->PopAxisAlignedClip();
+	return true;
 }
 
 void SurfaceD2D::DrawTextCommon(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, int codePageOverride, UINT fuOptions) {

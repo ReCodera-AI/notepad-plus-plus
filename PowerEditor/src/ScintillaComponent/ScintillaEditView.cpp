@@ -491,11 +491,14 @@ void ScintillaEditView::init(HINSTANCE hInst, HWND hPere)
 		// allow IDC_COMBO_SC_TECHNOLOGY_CHOICE to be set in Preferences > MISC. again
 		if (nppGui._writeTechnologyEngine == directWriteTechnologyUnavailable)
 			nppGui._writeTechnologyEngine = defaultTechnology;
+		if (nppGui._writeTechnologyEngine == defaultTechnology)
+			nppGui._writeTechnologyEngine = directWriteTechnology;
 	}
 
 	if ((nppGui._writeTechnologyEngine > defaultTechnology) && (nppGui._writeTechnologyEngine < directWriteTechnologyUnavailable))
 	{
 		execute(SCI_SETTECHNOLOGY, nppGui._writeTechnologyEngine);
+		execute(SCI_SETBIDIRECTIONAL, SC_BIDIRECTIONAL_L2R);
 		// If useDirectWrite is turned off, leave the technology setting untouched,
 		// so that existing plugins using SCI_SETTECHNOLOGY behave like before
 	}
@@ -2449,6 +2452,9 @@ void ScintillaEditView::bufferUpdated(Buffer * buffer, int mask)
 	//actually only care about language and lexing etc
 	if (buffer == _currentBuffer)
 	{
+		if ((mask & BufferChangeFilename) && (isTextDirectionRTL() != buffer->isRTL()))
+			changeTextDirection(buffer->isRTL());
+
 		if (mask & BufferChangeLanguage)
 		{
 			defineDocType(buffer->getLangType());
@@ -4520,31 +4526,42 @@ bool ScintillaEditView::isTextDirectionRTL() const
 
 void ScintillaEditView::changeTextDirection(bool isRTL)
 {
+	Buffer* buf = getCurrentBuffer();
+	if (buf)
+	{
+		buf->setRTL(isRTL);
+		const wchar_t* fn = buf->getFullPathName();
+		if (fn && fn[0] && (wcschr(fn, L'\\') || wcschr(fn, L'/')))
+		{
+			NppParameters::getInstance().setFileRTL(fn, isRTL);
+		}
+	}
+
 	if (isTextDirectionRTL() == isRTL)
 		return;
 
-	NppParameters& nppParamInst = NppParameters::getInstance();
-	if (isRTL && (nppParamInst.getNppGUI()._writeTechnologyEngine > defaultTechnology)
-		&& (nppParamInst.getNppGUI()._writeTechnologyEngine < directWriteTechnologyUnavailable)) // RTL is not compatible with DirectWrite
+	const NppGUI& nppGui = NppParameters::getInstance().getNppGUI();
+	if (isRTL)
 	{
-		static bool theWarningIsGiven = false;
-
-		if (!theWarningIsGiven)
+		// DirectWrite surface mirroring causes inverted glyphs with WS_EX_LAYOUTRTL.
+		// Dynamically fallback to GDI default technology so RTL window mirroring works smoothly.
+		execute(SCI_SETTECHNOLOGY, SC_TECHNOLOGY_DEFAULT);
+	}
+	else
+	{
+		// In LTR mode, restore user's preferred DirectWrite technology engine and enable bidi.
+		execute(SCI_SETTECHNOLOGY, nppGui._writeTechnologyEngine);
+		if (nppGui._writeTechnologyEngine > defaultTechnology)
 		{
-			(nppParamInst.getNativeLangSpeaker())->messageBox("RTLvsDirectWrite",
-				getHSelf(),
-				L"RTL is not compatible with Direct Write mode. Please disable DirectWrite mode in MISC. section of Preferences dialog, and restart Notepad++.",
-				L"Cannot run RTL",
-				MB_OK | MB_APPLMODAL);
-
-			theWarningIsGiven = true;
+			execute(SCI_SETBIDIRECTIONAL, SC_BIDIRECTIONAL_L2R);
 		}
-		return;
 	}
 
 	long exStyle = static_cast<long>(::GetWindowLongPtr(_hSelf, GWL_EXSTYLE));
 	exStyle = isRTL ? (exStyle | WS_EX_LAYOUTRTL) : (exStyle & (~WS_EX_LAYOUTRTL));
 	::SetWindowLongPtr(_hSelf, GWL_EXSTYLE, exStyle);
+	::SetWindowPos(_hSelf, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+	::InvalidateRect(_hSelf, nullptr, TRUE);
 
 	if (isRTL)
 	{
@@ -4575,8 +4592,6 @@ void ScintillaEditView::changeTextDirection(bool isRTL)
 		execute(SCI_ASSIGNCMDKEY, SCK_LEFT + ((SCMOD_SHIFT + SCMOD_CTRL) << 16), SCI_WORDLEFTEXTEND);
 	}
 
-	Buffer* buf = getCurrentBuffer();
-	buf->setRTL(isRTL);
 }
 
 wstring ScintillaEditView::getEOLString() const

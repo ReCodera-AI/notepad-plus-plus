@@ -1630,7 +1630,7 @@ InSelection CharacterInCursesSelection(Sci::Position iDoc, const EditModel &mode
 
 void DrawBackground(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
 	int xStart, PRectangle rcLine, int subLine, Range lineRange, Sci::Position posLineStart,
-	ColourOptional background) {
+	ColourOptional background, int tabWidthMinimumPixels) {
 
 	const bool selBackDrawn = vsDraw.SelectionBackgroundDrawn();
 	bool inIndentation = subLine == 0;	// Do not handle indentation except on first subline.
@@ -1640,9 +1640,15 @@ void DrawBackground(Surface *surface, const EditModel &model, const ViewStyle &v
 	const XYPOSITION xStartVisible = subLineStart - xStart;
 
 	const BreakFinder::BreakFor breakFor = selBackDrawn ? BreakFinder::BreakFor::Selection : BreakFinder::BreakFor::Text;
-	BreakFinder bfBack(ll, &model.sel, lineRange, posLineStart, xStartVisible, breakFor, model.pdoc, model.reprs.get(), &vsDraw);
-
 	const bool drawWhitespaceBackground = vsDraw.WhitespaceBackgroundDrawn() && !background;
+
+	std::unique_ptr<IScreenLineLayout> bidiLayout;
+	if (model.BidirectionalEnabled()) {
+		const ScreenLine screenLine(ll, subLine, vsDraw, rcLine.right, tabWidthMinimumPixels);
+		bidiLayout = surface->Layout(&screenLine);
+	}
+	BreakFinder bfBack(ll, &model.sel, lineRange, posLineStart, bidiLayout ? 0.0f : xStartVisible,
+		breakFor, model.pdoc, model.reprs.get(), &vsDraw, !bidiLayout);
 
 	// Background drawing loop
 	while (bfBack.More()) {
@@ -1651,7 +1657,15 @@ void DrawBackground(Surface *surface, const EditModel &model, const ViewStyle &v
 		const Sci::Position i = ts.end() - 1;
 		const Sci::Position iDoc = i + posLineStart;
 
-		const Interval horizontal = ll->Span(ts.start, ts.end()).Offset(horizontalOffset);
+		std::vector<Interval> visualIntervals;
+		if (bidiLayout) {
+			visualIntervals = bidiLayout->FindRangeIntervals(
+				ts.start - lineRange.start, ts.end() - lineRange.start);
+			MergeVisualIntervals(visualIntervals, xStart);
+		}
+		if (visualIntervals.empty())
+			visualIntervals.push_back(ll->Span(ts.start, ts.end()).Offset(horizontalOffset));
+		for (const Interval horizontal : visualIntervals) {
 		// Only try to draw if really visible - enhances performance by not calling environment to
 		// draw strings that are completely past the right side of the window.
 		if (!horizontal.Empty() && rcLine.Intersects(horizontal)) {
@@ -1685,10 +1699,20 @@ void DrawBackground(Surface *surface, const EditModel &model, const ViewStyle &v
 						}
 						if (countSpaces) {
 							if (drawWhitespaceBackground && vsDraw.WhiteSpaceVisible(inIndentation)) {
-								const PRectangle rcSpace = Intersection(rcLine,
-									ll->Span(cpos + ts.start, cpos + ts.start + countSpaces).Offset(horizontalOffset));
-								surface->FillRectangleAligned(rcSpace,
-									vsDraw.ElementColourForced(Element::WhiteSpaceBack).Opaque());
+								std::vector<Interval> spaces;
+								if (bidiLayout) {
+									spaces = bidiLayout->FindRangeIntervals(cpos + ts.start - lineRange.start,
+										cpos + ts.start + countSpaces - lineRange.start);
+									MergeVisualIntervals(spaces, xStart);
+								}
+								if (spaces.empty())
+									spaces.push_back(ll->Span(cpos + ts.start, cpos + ts.start + countSpaces).Offset(horizontalOffset));
+								for (const Interval space : spaces) {
+									const PRectangle rcSpace = Intersection(rcSegment, space);
+									if (!rcSpace.Empty())
+										surface->FillRectangleAligned(rcSpace,
+											vsDraw.ElementColourForced(Element::WhiteSpaceBack).Opaque());
+								}
 							}
 							cpos += countSpaces;
 						} else {
@@ -1698,8 +1722,7 @@ void DrawBackground(Surface *surface, const EditModel &model, const ViewStyle &v
 					}
 				}
 			}
-		} else if (horizontal.left > rcLine.right) {
-			break;
+		}
 		}
 	}
 }
@@ -2114,10 +2137,17 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 	// Same baseline used for all text
 	const XYPOSITION ybase = rcLine.top + vsDraw.maxAscent;
 
+	std::unique_ptr<IScreenLineLayout> slLayout;
+	if (model.BidirectionalEnabled()) {
+		const ScreenLine screenLine(ll, subLine, vsDraw, rcLine.right, tabWidthMinimumPixels);
+		slLayout = surface->Layout(&screenLine);
+	}
+
 	// Foreground drawing loop
 	const BreakFinder::BreakFor breakFor = (((phasesDraw == PhasesDraw::One) && selBackDrawn) || vsDraw.SelectionTextDrawn())
 		? BreakFinder::BreakFor::ForegroundAndSelection : BreakFinder::BreakFor::Foreground;
-	BreakFinder bfFore(ll, &model.sel, lineRange, posLineStart, xStartVisible, breakFor, model.pdoc, model.reprs.get(), &vsDraw);
+	BreakFinder bfFore(ll, &model.sel, lineRange, posLineStart, slLayout ? 0.0f : xStartVisible,
+		breakFor, model.pdoc, model.reprs.get(), &vsDraw, !slLayout);
 
 	while (bfFore.More()) {
 
@@ -2125,7 +2155,15 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 		const Sci::Position i = ts.end() - 1;
 		const Sci::Position iDoc = i + posLineStart;
 
-		const Interval horizontal = ll->Span(ts.start, ts.end()).Offset(horizontalOffset);
+		std::vector<Interval> visualIntervals;
+		if (slLayout) {
+			visualIntervals = slLayout->FindRangeIntervals(
+				ts.start - lineRange.start, ts.end() - lineRange.start);
+			MergeVisualIntervals(visualIntervals, xStart);
+		}
+		if (visualIntervals.empty())
+			visualIntervals.push_back(ll->Span(ts.start, ts.end()).Offset(horizontalOffset));
+		for (const Interval horizontal : visualIntervals) {
 		// Only try to draw if really visible - enhances performance by not calling environment to
 		// draw strings that are completely past the right side of the window.
 		if (rcLine.Intersects(horizontal)) {
@@ -2233,10 +2271,19 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 				// Normal text display
 				if (vsDraw.styles[styleMain].visible) {
 					const std::string_view text(&ll->chars[ts.start], i - ts.start + 1);
-					if (phasesDraw != PhasesDraw::One) {
+					bool drawnLayout = false;
+					if (slLayout) {
+						const PRectangle clip = Intersection(rcLine, horizontal);
+						if (!clip.Empty()) {
+							if (phasesDraw == PhasesDraw::One)
+								surface->FillRectangleAligned(clip, Fill(textBack));
+							drawnLayout = surface->DrawLayout(slLayout.get(), Point(xStart, rcLine.top), clip, textFore);
+						}
+					}
+					if (!drawnLayout && phasesDraw != PhasesDraw::One) {
 						surface->DrawTextTransparent(rcSegment, textFont,
 							ybase, text, textFore);
-					} else {
+					} else if (!drawnLayout) {
 						surface->DrawTextNoClip(rcSegment, textFont,
 							ybase, text, textFore, textBack);
 					}
@@ -2256,7 +2303,14 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 						if (ll->chars[cpos + ts.start] == ' ') {
 							if (vsDraw.viewWhitespace != WhiteSpace::Invisible) {
 								if (vsDraw.WhiteSpaceVisible(inIndentation)) {
-									const Interval intervalSpace = ll->SpanByte(cpos + ts.start).Offset(horizontalOffset);
+									Interval intervalSpace = ll->SpanByte(cpos + ts.start).Offset(horizontalOffset);
+									if (slLayout) {
+										const std::vector<Interval> spaceIntervals = slLayout->FindRangeIntervals(
+											cpos + ts.start - lineRange.start, cpos + ts.start + 1 - lineRange.start);
+										if (!spaceIntervals.empty()) {
+											intervalSpace = spaceIntervals[0].Offset(xStart);
+										}
+									}
 									const XYPOSITION xmid = (intervalSpace.left + intervalSpace.right) / 2;
 									if ((phasesDraw == PhasesDraw::One) && drawWhitespaceBackground) {
 										textBack = vsDraw.ElementColourForced(Element::WhiteSpaceBack).Opaque();
@@ -2299,8 +2353,7 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 				}
 				surface->FillRectangleAligned(rcUL, colourUnderline);
 			}
-		} else if (horizontal.left > rcLine.right) {
-			break;
+		}
 		}
 	}
 }
@@ -2396,7 +2449,7 @@ void EditView::DrawLine(Surface *surface, const EditModel &model, const ViewStyl
 		if (FlagSet(phase, DrawPhase::back)) {
 			DrawBackground(surface, model, vsDraw, ll,
 				xStart, rcLine, subLine, lineRange, posLineStart,
-				background);
+				background, tabWidthMinimumPixels);
 			DrawFoldDisplayText(surface, model, vsDraw, ll, line, xStart, rcLine, subLine, subLineStart, DrawPhase::back);
 			DrawEOLAnnotationText(surface, model, vsDraw, ll, line, xStart, rcLine, subLine, subLineStart, DrawPhase::back);
 			// Remove drawBack to not draw again in DrawFoldDisplayText

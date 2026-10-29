@@ -244,3 +244,25 @@ TEST_CASE("ColourRGBA") {
 	}
 
 }
+
+TEST_CASE("Merge visual bidi intervals") {
+	SECTION("Empty") {
+		std::vector<Interval> ranges;
+		MergeVisualIntervals(ranges, 10.0);
+		REQUIRE(ranges.empty());
+	}
+	SECTION("Unsorted, touching and overlapping ranges") {
+		std::vector<Interval> ranges{{8.0, 10.0}, {1.0, 3.0}, {3.0, 5.0}, {4.0, 6.0}};
+		MergeVisualIntervals(ranges, 7.0);
+		REQUIRE(ranges.size() == 2);
+		REQUIRE(ranges[0] == Interval{8.0, 13.0});
+		REQUIRE(ranges[1] == Interval{15.0, 17.0});
+	}
+	SECTION("Fractional adjacency and visible gap") {
+		std::vector<Interval> ranges{{0.0, 1.0}, {1.005, 2.0}, {2.02, 3.0}};
+		MergeVisualIntervals(ranges, -1.0);
+		REQUIRE(ranges.size() == 2);
+		REQUIRE(ranges[0] == Interval{-1.0, 1.0});
+		REQUIRE(ranges[1] == Interval{1.02, 2.0});
+	}
+}

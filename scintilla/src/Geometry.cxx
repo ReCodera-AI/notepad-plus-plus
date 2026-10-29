@@ -22,6 +22,21 @@ constexpr unsigned int Mixed(unsigned char a, unsigned char b, double proportion
 
 namespace Scintilla::Internal {
 
+void MergeVisualIntervals(std::vector<Interval> &intervals, XYPOSITION offset) {
+	std::sort(intervals.begin(), intervals.end(),
+		[](Interval a, Interval b) noexcept { return a.left < b.left; });
+	size_t mergedCount = 0;
+	for (Interval interval : intervals) {
+		interval = interval.Offset(offset);
+		if (mergedCount && interval.left <= intervals[mergedCount - 1].right + 0.01) {
+			intervals[mergedCount - 1].right = std::max(intervals[mergedCount - 1].right, interval.right);
+		} else {
+			intervals[mergedCount++] = interval;
+		}
+	}
+	intervals.resize(mergedCount);
+}
+
 PRectangle Clamp(PRectangle rc, Edge edge, XYPOSITION position) noexcept {
 	switch (edge) {
 	case Edge::left:

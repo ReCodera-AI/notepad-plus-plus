@@ -32,6 +32,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <set>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -1788,6 +1789,11 @@ public:
 
 	static void buildGupParams(std::wstring& params);
 
+	void setFileRTL(const std::wstring& filePath, bool isRTL);
+	bool isFileRTL(const std::wstring& filePath) const;
+	void feedRTLFilesParameters(const NppXml::Element& element);
+	bool writeRTLFilesSettings();
+
 private:
 	NppParameters();
 	~NppParameters();
@@ -1833,6 +1839,7 @@ private:
 															//	>0: Custom Entry Length
 
 	FindHistory _findHistory;
+	std::set<std::wstring> _rtlFiles;
 
 	std::unique_ptr<UserLangContainer> _userLangArray[NB_MAX_USER_LANG] = { nullptr };
 	unsigned char _nbUserLang = 0; // won't be exceeded to 255;

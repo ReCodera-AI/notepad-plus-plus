@@ -291,6 +291,11 @@ void Buffer::setFileName(const wchar_t *fn)
 	_fullPathName = fn;
 	_fileName = PathFindFileName(_fullPathName.c_str());
 
+	if (!_fullPathName.empty() && (_fullPathName.find(L'\\') != std::wstring::npos || _fullPathName.find(L'/') != std::wstring::npos))
+	{
+		_isRTL = nppParamInst.isFileRTL(_fullPathName);
+	}
+
 	const UINT tabCompactLabelLen = nppParamInst.getNbTabCompactLabelLen();
 	if ((tabCompactLabelLen == 0) || (static_cast<UINT>(wcslen(_fileName)) <= tabCompactLabelLen))
 	{

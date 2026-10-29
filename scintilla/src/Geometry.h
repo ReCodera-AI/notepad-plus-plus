@@ -8,6 +8,8 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
+#include <vector>
+
 namespace Scintilla::Internal {
 
 typedef double XYPOSITION;
@@ -170,6 +172,7 @@ enum class Edge { left, top, bottom, right };
 PRectangle Clamp(PRectangle rc, Edge edge, XYPOSITION position) noexcept;
 PRectangle Side(PRectangle rc, Edge edge, XYPOSITION size) noexcept;
 
+void MergeVisualIntervals(std::vector<Interval> &intervals, XYPOSITION offset);
 Interval Intersection(Interval a, Interval b) noexcept;
 PRectangle Intersection(PRectangle rc, Interval horizontalBounds) noexcept;
 Interval HorizontalBounds(PRectangle rc) noexcept;

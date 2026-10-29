@@ -2889,6 +2889,9 @@ bool NppParameters::getUserParametersFromXmlTree()
 	//Get Column editor parameters
 	feedColumnEditorParameters(root);
 
+	//Get RTL files parameters
+	feedRTLFilesParameters(root);
+
 	return true;
 }
 
@@ -3922,6 +3925,74 @@ void NppParameters::feedColumnEditorParameters(const NppXml::Element& element)
 			_columnEditParam._leadingChoice = noneLeading;
 		}
 	}
+}
+
+void NppParameters::feedRTLFilesParameters(const NppXml::Element& element)
+{
+	_rtlFiles.clear();
+	NppXml::Element rtlRoot = NppXml::firstChildElement(element, "RTLFiles");
+	if (!rtlRoot) return;
+
+	for (NppXml::Element childNode = NppXml::firstChildElement(rtlRoot, "File");
+		childNode;
+		childNode = NppXml::nextSiblingElement(childNode, "File"))
+	{
+		std::wstring filePath = string2wstring(NppXml::attribute(childNode, "filename", ""));
+		if (!filePath.empty())
+		{
+			std::transform(filePath.begin(), filePath.end(), filePath.begin(), ::towlower);
+			_rtlFiles.insert(filePath);
+		}
+	}
+}
+
+bool NppParameters::writeRTLFilesSettings()
+{
+	if (!_xmlUserDoc._doc) return false;
+
+	NppXml::Element nppRoot = NppXml::firstChildElement(_xmlUserDoc._doc, "NotepadPlus");
+	if (!nppRoot) return false;
+
+	NppXml::Element rtlRoot = NppXml::firstChildElement(nppRoot, "RTLFiles");
+	if (rtlRoot)
+	{
+		NppXml::deleteChild(nppRoot, rtlRoot);
+	}
+	rtlRoot = NppXml::createChildElement(nppRoot, "RTLFiles");
+
+	for (const auto& path : _rtlFiles)
+	{
+		NppXml::Element fileNode = NppXml::createChildElement(rtlRoot, "File");
+		NppXml::setAttribute(fileNode, "filename", wstring2string(path));
+	}
+	return true;
+}
+
+void NppParameters::setFileRTL(const std::wstring& filePath, bool isRTL)
+{
+	if (filePath.empty()) return;
+	if (filePath.find(L'\\') == std::wstring::npos && filePath.find(L'/') == std::wstring::npos)
+		return;
+
+	std::wstring lowerPath = filePath;
+	std::transform(lowerPath.begin(), lowerPath.end(), lowerPath.begin(), ::towlower);
+	if (isRTL)
+	{
+		_rtlFiles.insert(lowerPath);
+	}
+	else
+	{
+		_rtlFiles.erase(lowerPath);
+	}
+	writeRTLFilesSettings();
+}
+
+bool NppParameters::isFileRTL(const std::wstring& filePath) const
+{
+	if (filePath.empty()) return false;
+	std::wstring lowerPath = filePath;
+	std::transform(lowerPath.begin(), lowerPath.end(), lowerPath.begin(), ::towlower);
+	return _rtlFiles.find(lowerPath) != _rtlFiles.end();
 }
 
 void NppParameters::feedFindHistoryParameters(const NppXml::Element& element)
@@ -7012,6 +7083,10 @@ void NppParameters::feedGUIParameters(const NppXml::Element& element)
 			{
 				using enum writeTechnologyEngine;
 				_nppGUI._writeTechnologyEngine = getRangeDefaultAttribute(childNode, "writeTechnologyEngine", defaultTechnology, directWriteTechnologyUnavailable, _nppGUI._writeTechnologyEngine);
+				if (_nppGUI._writeTechnologyEngine == defaultTechnology)
+				{
+					_nppGUI._writeTechnologyEngine = directWriteTechnology;
+				}
 			}
 
 			_nppGUI._isFolderDroppedOpenFiles = getBoolAttribute(childNode, "isFolderDroppedOpenFiles");
@@ -7621,6 +7696,7 @@ bool NppParameters::writeScintillaParams()
 
 void NppParameters::createXmlTreeFromGUIParams()
 {
+	writeRTLFilesSettings();
 	NppXml::Element nppRoot = NppXml::firstChildElement(_xmlUserDoc._doc, "NotepadPlus");
 	if (!nppRoot)
 	{

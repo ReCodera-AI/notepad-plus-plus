@@ -2617,8 +2617,6 @@ bool Notepad_plus::loadSession(Session & session, bool isSnapshotMode, const wch
 				buf->setDirty(true);
 
 			buf->setRTL(session._mainViewFiles[i]._isRTL);
-			if (i == 0 && session._activeMainIndex == 0)
-				_mainEditView.changeTextDirection(buf->isRTL());
 
 			_mainDocTab.setIndividualTabColour(lastOpened, session._mainViewFiles[i]._individualTabColour);
 
@@ -2801,7 +2799,10 @@ bool Notepad_plus::loadSession(Session & session, bool isSnapshotMode, const wch
 		const wchar_t* fileName = session._mainViewFiles[session._activeMainIndex]._fileName.c_str();
 		BufferID buf = _mainDocTab.findBufferByName(fileName);
 		if (buf != BUFFER_INVALID)
-			activateBuffer(buf, MAIN_VIEW);
+		{
+			activateBuffer(buf, MAIN_VIEW, true);
+			_mainEditView.changeTextDirection(buf->isRTL());
+		}
 	}
 
 	if (session._activeSubIndex < session._subViewFiles.size())
@@ -2809,7 +2810,10 @@ bool Notepad_plus::loadSession(Session & session, bool isSnapshotMode, const wch
 		const wchar_t* fileName = session._subViewFiles[session._activeSubIndex]._fileName.c_str();
 		BufferID buf = _subDocTab.findBufferByName(fileName);
 		if (buf != BUFFER_INVALID)
-			activateBuffer(buf, SUB_VIEW);
+		{
+			activateBuffer(buf, SUB_VIEW, true);
+			_subEditView.changeTextDirection(buf->isRTL());
+		}
 	}
 
 	if ((session.nbSubFiles() > 0) && (session._activeView == MAIN_VIEW || session._activeView == SUB_VIEW))

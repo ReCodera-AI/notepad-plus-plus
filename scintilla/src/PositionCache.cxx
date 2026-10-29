@@ -795,6 +795,14 @@ void SpecialRepresentations::SetDefaultRepresentations(int dbcsCodePage) {
 	}
 }
 
+inline bool IsRTLChar(int uch) noexcept {
+	return (uch >= 0x0590 && uch <= 0x08FF) || // Hebrew, Arabic, Syriac, Thaana, Samaritan, Mandaic, Arabic Extended-A/B
+	       (uch >= 0xFB1D && uch <= 0xFDFF) || // Hebrew Presentation Forms, Arabic Presentation Forms-A
+	       (uch >= 0xFE70 && uch <= 0xFEFF) || // Arabic Presentation Forms-B
+	       (uch >= 0x10800 && uch <= 0x10FFF) || // Various RTL historical scripts
+	       (uch >= 0x1E800 && uch <= 0x1E95F); // Mende Kikakui, Adlam
+}
+
 void BreakFinder::Insert(Sci::Position val) {
 	const int posInLine = static_cast<int>(val);
 	if (posInLine > nextBreak) {
@@ -804,11 +812,14 @@ void BreakFinder::Insert(Sci::Position val) {
 		} else if (*it != posInLine) {
 			selAndEdge.insert(it, 1, posInLine);
 		}
+		if (saeCurrentPos < selAndEdge.size()) {
+			saeNext = selAndEdge[saeCurrentPos];
+		}
 	}
 }
 
 BreakFinder::BreakFinder(const LineLayout *ll_, const Selection *psel, Range lineRange_, Sci::Position posLineStart,
-	XYPOSITION xStart, BreakFor breakFor, const Document *pdoc_, const SpecialRepresentations *preprs_, const ViewStyle *pvsDraw) :
+	XYPOSITION xStart, BreakFor breakFor, const Document *pdoc_, const SpecialRepresentations *preprs_, const ViewStyle *pvsDraw, bool splitDirectional) :
 	ll(ll_),
 	lineRange(lineRange_),
 	nextBreak(static_cast<int>(lineRange_.start)),
@@ -861,6 +872,50 @@ BreakFinder::BreakFinder(const LineLayout *ll_, const Selection *psel, Range lin
 					Insert(startPos - posLineStart);
 					startPos = deco->EndRun(startPos);
 				}
+			}
+		}
+	}
+	const int lrStart = static_cast<int>(lineRange.start);
+	const int lrEnd = static_cast<int>(lineRange.end);
+	if (splitDirectional && encodingFamily == EncodingFamily::unicode) {
+		bool hasRTL = false;
+		for (int idx = lrStart; idx < lrEnd; ++idx) {
+			if (static_cast<unsigned char>(ll->chars[idx]) >= 0xD6) {
+				hasRTL = true;
+				break;
+			}
+		}
+		if (hasRTL && lrEnd > lrStart) {
+			int pos = lrStart;
+			int firstCharWidth = UTF8DrawBytes(&ll->chars[pos], lrEnd - pos);
+			const int firstUch = UnicodeFromUTF8(std::string_view(&ll->chars[pos], lrEnd - pos));
+			bool wasRTL = IsRTLChar(firstUch);
+			pos += firstCharWidth;
+			while (pos < lrEnd) {
+				const int charWidth = UTF8DrawBytes(&ll->chars[pos], lrEnd - pos);
+				const int uch = UnicodeFromUTF8(std::string_view(&ll->chars[pos], lrEnd - pos));
+				const bool isRTL = IsRTLChar(uch);
+				if (isRTL != wasRTL) {
+					Insert(pos);
+					wasRTL = isRTL;
+				}
+				pos += charWidth;
+			}
+		}
+	} else if (splitDirectional && encodingFamily == EncodingFamily::eightBit && pdoc->dbcsCodePage == 1256) {
+		if (lrEnd > lrStart) {
+			int pos = lrStart;
+			const unsigned char firstCh = static_cast<unsigned char>(ll->chars[pos]);
+			bool wasRTL = (firstCh >= 0xC0 && firstCh <= 0xFE && firstCh != 0xD7 && firstCh != 0xF7);
+			pos++;
+			while (pos < lrEnd) {
+				const unsigned char ch = static_cast<unsigned char>(ll->chars[pos]);
+				const bool isRTL = (ch >= 0xC0 && ch <= 0xFE && ch != 0xD7 && ch != 0xF7);
+				if (isRTL != wasRTL) {
+					Insert(pos);
+					wasRTL = isRTL;
+				}
+				pos++;
 			}
 		}
 	}
