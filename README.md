@@ -1,50 +1,53 @@
-What is Notepad++ ?
-===================
+<div align="center">
+  <img src="docs/assets/covers/cover-chameleon-ribbon.png" alt="Emerald code ribbon curling around an editor page on a midnight background" width="100%">
+  <br><br>
+  <img src="docs/assets/notepad-plus-plus-icon.png" alt="Notepad++ chameleon and pencil icon" width="88">
+  <h1>Notepad++</h1>
+  <p><strong>ReCodera-AI Community Build</strong></p>
+  <p>Careful, AI-assisted improvements to an editor trusted by developers around the world.</p>
+  <p>
+    <a href="https://github.com/ReCodera-AI/notepad-plus-plus/releases">ReCodera-AI Releases</a>
+    &nbsp;·&nbsp;
+    <a href="https://recodera-ai.github.io/notepad-plus-plus/">Project Homepage</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/notepad-plus-plus/notepad-plus-plus">Original Notepad++ Project</a>
+  </p>
+</div>
 
-[![GitHub release](https://img.shields.io/github/release/notepad-plus-plus/notepad-plus-plus.svg)](../../releases/latest)&nbsp;&nbsp;&nbsp;&nbsp;[![Build Status](https://img.shields.io/github/actions/workflow/status/notepad-plus-plus/notepad-plus-plus/CI_build.yml)](https://github.com/notepad-plus-plus/notepad-plus-plus/actions/workflows/CI_build.yml)
-&nbsp;&nbsp;&nbsp;&nbsp;[![Join the discussions at https://community.notepad-plus-plus.org/](https://notepad-plus-plus.org/assets/images/NppCommunityBadge.svg)](https://community.notepad-plus-plus.org/)
+---
 
-Notepad++ is a free (free as in both "free speech" and "free beer") source code
-editor and Notepad replacement that supports several programming languages and
-natural languages. Running in the MS Windows environment, its use is governed by
-[GPL License](LICENSE).
+## About This Build
 
-See the [Notepad++ official site](https://notepad-plus-plus.org/) for more information.
+Notepad++ is the open-source Windows editor maintained by its original project at [notepad-plus-plus/notepad-plus-plus](https://github.com/notepad-plus-plus/notepad-plus-plus). This repository is an independent ReCodera-AI community build based on that project. It preserves the upstream project’s open-source foundation while exploring focused fixes for real user issues.
 
+ReCodera-AI uses AI-assisted investigation, engineering, and verification to improve open-source software. The original application and project belong to their upstream maintainers; this community build is not an official Notepad++ release and is not affiliated with the upstream maintainers.
 
-Notepad++ GPG Release Key
--------------------------
-_Since the release of version 7.6.5 Notepad++ is signed using GPG with the following key:_
+## Fixes In This Build
 
-- **Signer:** Notepad++
-- **E-mail:** don.h@free.fr
-- **Key ID:** 0x8D84F46E
-- **Key fingerprint:** 14BC E436 2749 B2B5 1F8C 7122 6C42 9F1D 8D84 F46E
-- **Key type:** RSA 4096/4096
-- **Created:** 2019-03-11
-- **Expires:** 2027-03-13
+- **Arabic and English text in LTR documents:** corrected visual placement of mixed right-to-left Arabic and left-to-right text while the document remains left-to-right.
+- **Remembered RTL display direction:** retain and restore a file’s right-to-left view direction when switching files, reopening files, and restoring sessions.
+- **DirectWrite with text direction changes:** keep the preferred DirectWrite renderer available in LTR mode and use a compatible rendering path for RTL mode.
 
-https://github.com/notepad-plus-plus/notepad-plus-plus/blob/master/nppGpgPub.asc
+The fixes are implemented in the editor and Scintilla rendering paths. See the [release notes](docs/releases/v8.9.8.2.md) for the detailed change summary and verification record.
 
+## Choose A Cover
 
-Supported OS
-------------
+Three original cover-art options are included in the [project homepage](https://recodera-ai.github.io/notepad-plus-plus/). Each option presents the Notepad++ name and icon with the ReCodera-AI project name, without a version number. The site deploys from `docs/` through GitHub Actions; enable **Settings → Pages → Build and deployment → Source: GitHub Actions** once in the repository settings.
 
-All the Windows systems still supported by Microsoft are supported by Notepad++. However, not all Notepad++ users can or want to use the newest system. Here is the [Supported systems information](SUPPORTED_SYSTEM.md) you may need in case you are one of them.
+| Option | Artwork |
+| --- | --- |
+| Chameleon Ribbon | `docs/assets/covers/cover-chameleon-ribbon.png` |
+| Code Architecture | `docs/assets/covers/cover-code-architecture.png` |
+| Paper Ribbon | `docs/assets/covers/cover-paper-ribbon.png` |
 
+## Build And Contribute
 
+- Read the upstream [build guide](BUILD.md) before compiling the Windows application.
+- Review the upstream [contribution guide](CONTRIBUTING.md) before proposing changes.
+- Compare changes against the original [Notepad++ repository](https://github.com/notepad-plus-plus/notepad-plus-plus) when preparing an upstream pull request.
+- Read the [GPL license](LICENSE) that governs this project.
 
+## Project Links
 
-Build Notepad++
----------------
-
-Please follow [build guide](BUILD.md) to build Notepad++ from source.
-
-
-Contribution
-------------
-
-Contributions are welcome. Be mindful of our [Contribution Rules](CONTRIBUTING.md) to increase the likelihood of your contribution getting accepted.
-
-[Notepad++ Contributors](https://github.com/notepad-plus-plus/notepad-plus-plus/graphs/contributors)
-
+- [ReCodera-AI source and releases](https://github.com/ReCodera-AI/notepad-plus-plus)
+- [Original Notepad++ project and ownership](https://github.com/notepad-plus-plus/notepad-plus-plus)
