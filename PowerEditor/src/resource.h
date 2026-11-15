@@ -19,14 +19,14 @@
 
 //************ Notepad++ version **************************
 
-#define NOTEPAD_PLUS_VERSION L"Notepad++ v8.9.9.1"
+#define NOTEPAD_PLUS_VERSION L"Notepad++ v2026.11.15.01"
 
-// should be X.Y : ie. if VERSION_DIGITALVALUE == 4, 7, 1, 0 , then X = 4, Y = 71
+// The plug-in API version remains at the upstream-compatible value for ABI compatibility.
 // ex : #define VERSION_VALUE L"5.63\0"
 #define VERSION_INTERNAL_VALUE L"8.991\0"
 
-#define VERSION_PRODUCT_VALUE L"8.9.9.1\0"
-#define VERSION_DIGITALVALUE 8, 9, 9, 1
+#define VERSION_PRODUCT_VALUE L"2026.11.15.01\0"
+#define VERSION_DIGITALVALUE 2026, 11, 15, 1
 
 //**********************************************************
 
