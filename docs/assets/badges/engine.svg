@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="190" height="42" viewBox="0 0 190 42" role="img" aria-label="Engine: BiDi + RTL">
-<defs><linearGradient id="g" x2="0" y2="1"><stop stop-color="#a855f7"/><stop offset="1" stop-color="#6d28d9"/></linearGradient><linearGradient id="s" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".28"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
-<rect x="1" y="4" width="188" height="36" rx="10" fill="#0f172a" opacity=".35"/><rect x="1" y="1" width="188" height="36" rx="10" fill="url(#g)" stroke="#fff" stroke-opacity=".45"/><rect x="2" y="2" width="186" height="34" rx="9" fill="url(#s)"/><text x="95" y="24" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="700" fill="#fff">Engine · BiDi + RTL</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="24" viewBox="0 0 120 24" role="img" aria-label="Engine BiDi and RTL">
+<defs><clipPath id="badge"><rect width="120" height="24" rx="3"/></clipPath></defs>
+<g clip-path="url(#badge)"><rect width="49" height="24" fill="#555"/><rect x="49" width="71" height="24" fill="#8742d6"/></g>
+<text x="24.5" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#fff">engine</text><text x="84.5" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="700" fill="#fff">BiDi + RTL</text>
 </svg>

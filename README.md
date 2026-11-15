@@ -9,7 +9,7 @@
 
 [![Release v2026.11.15.01](docs/assets/badges/release.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/releases/tag/v2026.11.15.01)
 [![Build checks](docs/assets/badges/build.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/actions)
-[![Windows platform](docs/assets/badges/platform.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/releases)
+[![Windows and Linux platforms](docs/assets/badges/platform.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/releases)
 [![Bidirectional and right-to-left engine](docs/assets/badges/engine.svg)](docs/releases/v2026.11.15.01.md)
 [![GPL v3 or later license](docs/assets/badges/license.svg)](LICENSE)
 
@@ -28,7 +28,7 @@
 
 ## Downloads And Platforms
 
-Release packages, including portable ZIP archives for Windows x64 (AMD64), x86 (Win32), and ARM64, are available on the [GitHub Releases page](https://github.com/ReCodera-AI/notepad-plus-plus/releases). Linux packages are not provided by the Windows-native Notepad++ build system.
+Windows release packages and portable ZIP archives are available for x64 (AMD64), x86 (Win32), and ARM64 on the [GitHub Releases page](https://github.com/ReCodera-AI/notepad-plus-plus/releases). The Linux compatibility archive runs the Windows x64 build through system Wine; it is not a native Linux build. No macOS package is provided.
 
 The Windows application and file properties display the same independent release identifier as the tag. The Notepad++ plug-in API version remains at its upstream-compatible value. See the [release notes](docs/releases/v2026.11.15.01.md) and [build instructions](BUILD.md).
 
