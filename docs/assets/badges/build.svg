@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="112" height="24" viewBox="0 0 112 24" role="img" aria-label="Build checks">
-<defs><clipPath id="badge"><rect width="112" height="24" rx="3"/></clipPath></defs>
-<g clip-path="url(#badge)"><rect width="44" height="24" fill="#555"/><rect x="44" width="68" height="24" fill="#0798c5"/></g>
-<text x="22" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#fff">build</text><text x="78" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="700" fill="#fff">checks</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="151" height="24" viewBox="0 0 151 24" role="img" aria-label="Build: 12 Checks Passed">
+  <defs><clipPath id="badge"><rect width="151" height="24" rx="3"/></clipPath></defs>
+  <g clip-path="url(#badge)"><rect width="39" height="24" fill="#555"/><rect x="39" width="112" height="24" fill="#069ec3"/></g>
+  <path d="M39 2v20" stroke="#fff" stroke-opacity=".18"/>
+  <text x="19.5" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#fff">Build</text>
+  <text x="95" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="700" fill="#fff">12 Checks Passed</text>
 </svg>

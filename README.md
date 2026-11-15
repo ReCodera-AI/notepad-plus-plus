@@ -8,9 +8,10 @@
 ### Bidirectional Text And Right-To-Left Editing Improvements
 
 [![Release v2026.11.15.01](docs/assets/badges/release.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/releases/tag/v2026.11.15.01)
-[![Build checks](docs/assets/badges/build.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/actions)
-[![Windows and Linux platforms](docs/assets/badges/platform.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/releases)
-[![Bidirectional and right-to-left engine](docs/assets/badges/engine.svg)](docs/releases/v2026.11.15.01.md)
+[![Independent version identifier R-E-I](docs/assets/badges/version.svg)](docs/releases/v2026.11.15.01.md)
+[![12 build checks passed](docs/assets/badges/build.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/actions)
+[![Windows, Linux, and macOS compatibility](docs/assets/badges/platform.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/releases)
+[![English](docs/assets/badges/language.svg)](README.md)
 [![GPL v3 or later license](docs/assets/badges/license.svg)](LICENSE)
 
 </div>
@@ -28,7 +29,7 @@
 
 ## Downloads And Platforms
 
-Windows release packages and portable ZIP archives are available for x64 (AMD64), x86 (Win32), and ARM64 on the [GitHub Releases page](https://github.com/ReCodera-AI/notepad-plus-plus/releases). The Linux compatibility archive runs the Windows x64 build through system Wine; it is not a native Linux build. No macOS package is provided.
+Windows application EXEs are available for x64 (AMD64), x86 (Win32), ARM64, x64 GCC, x86 GCC, and x64 Clang, with portable ZIP archives for MSVC x64, x86, and ARM64. Linux and macOS archives are compatibility packages that run the Windows x64 build through Wine or CrossOver; they are not native builds. Download packages from the [GitHub Releases page](https://github.com/ReCodera-AI/notepad-plus-plus/releases).
 
 The Windows application and file properties display the same independent release identifier as the tag. The Notepad++ plug-in API version remains at its upstream-compatible value. See the [release notes](docs/releases/v2026.11.15.01.md) and [build instructions](BUILD.md).
 

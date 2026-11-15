@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="120" height="24" viewBox="0 0 120 24" role="img" aria-label="Engine BiDi and RTL">
-<defs><clipPath id="badge"><rect width="120" height="24" rx="3"/></clipPath></defs>
-<g clip-path="url(#badge)"><rect width="49" height="24" fill="#555"/><rect x="49" width="71" height="24" fill="#8742d6"/></g>
-<text x="24.5" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#fff">engine</text><text x="84.5" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="700" fill="#fff">BiDi + RTL</text>
-</svg>

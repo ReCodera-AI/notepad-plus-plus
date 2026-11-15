@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="119" height="24" viewBox="0 0 119 24" role="img" aria-label="Language: English">
+  <defs><clipPath id="badge"><rect width="119" height="24" rx="3"/></clipPath></defs>
+  <g clip-path="url(#badge)"><rect width="55" height="24" fill="#555"/><rect x="55" width="64" height="24" fill="#ec8b18"/></g>
+  <path d="M55 2v20" stroke="#fff" stroke-opacity=".18"/>
+  <text x="27.5" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#fff">Language</text>
+  <text x="87" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="700" fill="#fff">English</text>
+</svg>

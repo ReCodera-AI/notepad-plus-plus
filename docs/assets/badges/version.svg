@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="118" height="24" viewBox="0 0 118 24" role="img" aria-label="Version: R-E-I">
+  <defs><clipPath id="badge"><rect width="118" height="24" rx="3"/></clipPath></defs>
+  <g clip-path="url(#badge)"><rect width="58" height="24" fill="#555"/><rect x="58" width="60" height="24" fill="#9254de"/></g>
+  <path d="M58 2v20" stroke="#fff" stroke-opacity=".18"/>
+  <text x="29" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#fff">Version</text>
+  <text x="88" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="700" fill="#fff">R-E-I</text>
+</svg>
