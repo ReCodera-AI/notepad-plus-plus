@@ -57,8 +57,8 @@ CPP_DEFINE := UNICODE _UNICODE OEMRESOURCE NOMINMAX _WIN32_WINNT=_WIN32_WINNT_WI
 LD := $(CXX)
 LDFLAGS := -municode -mwindows
 LD_PATH :=
-LD_LINK := comctl32 crypt32 dbghelp ole32 sensapi shlwapi uuid uxtheme version wininet wintrust dwmapi bcrypt usp10
-LD_LINK += $(patsubst lib%.a,%,$(SCINTILLA_TARGET)) $(patsubst lib%.a,%,$(LEXILLA_TARGET)) imm32 msimg32 ole32 oleaut32
+LD_LINK := comctl32 crypt32 dbghelp ole32 sensapi shlwapi uuid uxtheme version wininet wintrust dwmapi bcrypt
+LD_LINK += $(patsubst lib%.a,%,$(SCINTILLA_TARGET)) $(patsubst lib%.a,%,$(LEXILLA_TARGET)) imm32 msimg32 ole32 oleaut32 usp10
 SUBMAKEFLAGS := -O --no-print-directory
 
 # detect a request for a debug build
