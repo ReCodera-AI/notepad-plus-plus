@@ -9,4 +9,4 @@ Enable Pages once in the ReCodera-AI repository:
 3. Save the setting.
 4. Open **Actions → Publish project homepage** and rerun the failed run, or push a later change under `docs/`.
 
-The workflow already declares `pages: write` and `id-token: write`. The current release is source-only; this Pages setting does not create or verify Notepad++ application binaries.
+The workflow already declares `pages: write` and `id-token: write`. Release binaries are built and validated separately through the repository's build workflow; enabling Pages only publishes this documentation site.
