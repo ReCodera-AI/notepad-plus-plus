@@ -7,17 +7,15 @@
 # Notepad++ ReCodera-AI Community Edition
 ### Bidirectional Text And Right-To-Left Editing Improvements
 
-[![Release](https://img.shields.io/badge/Release-v2026.11.15.01-22c55e?style=for-the-badge&logo=notepad%2B%2B&logoColor=white&labelColor=111827)](https://github.com/ReCodera-AI/notepad-plus-plus/releases/tag/v2026.11.15.01)
-[![Build](https://img.shields.io/badge/Build-Checks-06b6d4?style=for-the-badge&logo=githubactions&logoColor=white&labelColor=111827)](https://github.com/ReCodera-AI/notepad-plus-plus/actions)
-[![Windows](https://img.shields.io/badge/Platform-Windows%20x64%20%7C%20x86%20%7C%20ARM64-3b82f6?style=for-the-badge&logo=windows11&logoColor=white&labelColor=111827)](https://github.com/ReCodera-AI/notepad-plus-plus/releases)
-[![BiDi](https://img.shields.io/badge/Engine-Uniscribe%20%2B%20DirectWrite-a855f7?style=for-the-badge&logo=windows&logoColor=white&labelColor=111827)](docs/releases/v2026.11.15.01.md)
-[![License](https://img.shields.io/badge/License-GPL%20v3%2B-f97316?style=for-the-badge&labelColor=111827)](LICENSE)
+[![Release v2026.11.15.01](docs/assets/badges/release.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/releases/tag/v2026.11.15.01)
+[![Build checks](docs/assets/badges/build.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/actions)
+[![Windows platform](docs/assets/badges/platform.svg)](https://github.com/ReCodera-AI/notepad-plus-plus/releases)
+[![Bidirectional and right-to-left engine](docs/assets/badges/engine.svg)](docs/releases/v2026.11.15.01.md)
+[![GPL v3 or later license](docs/assets/badges/license.svg)](LICENSE)
 
 </div>
 
 > **Independent Community Project:** This ReCodera-AI edition is developed and released independently. It is not affiliated with, sponsored by, or endorsed by the original Notepad++ project or its maintainers.
-
-This fork packages the bidirectional text and right-to-left editing work described in [PR #18596](https://github.com/notepad-plus-plus/notepad-plus-plus/pull/18596), which was closed without being merged upstream.
 
 ## Highlights
 
@@ -30,9 +28,9 @@ This fork packages the bidirectional text and right-to-left editing work describ
 
 ## Downloads And Platforms
 
-Release packages are published on the [GitHub Releases page](https://github.com/ReCodera-AI/notepad-plus-plus/releases). Supported build targets are Windows x64 (AMD64), x86 (Win32), and ARM64. Linux packages are not provided by the Windows-native Notepad++ build system.
+Release packages, including portable ZIP archives for Windows x64 (AMD64), x86 (Win32), and ARM64, are available on the [GitHub Releases page](https://github.com/ReCodera-AI/notepad-plus-plus/releases). Linux packages are not provided by the Windows-native Notepad++ build system.
 
-The release tag is independent of the application's embedded version metadata. See the [release notes](docs/releases/v2026.11.15.01.md) and [build instructions](BUILD.md).
+The Windows application and file properties display the same independent release identifier as the tag. The Notepad++ plug-in API version remains at its upstream-compatible value. See the [release notes](docs/releases/v2026.11.15.01.md) and [build instructions](BUILD.md).
 
 ## Attribution And License
 
