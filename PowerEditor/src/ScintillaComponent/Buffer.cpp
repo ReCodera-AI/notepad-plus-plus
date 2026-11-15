@@ -36,6 +36,12 @@
 #include <string>
 #include <vector>
 
+#include <sddl.h>
+#include <aclapi.h>
+#pragma comment(lib, "advapi32.lib")
+#include <objbase.h>
+#pragma comment(lib, "ole32.lib")
+
 #include <ILexer.h>
 #include <Lexilla.h>
 #include <Scintilla.h>
@@ -236,7 +242,7 @@ void Buffer::updateTimeStamp()
 
 	if (res == -1 || res == 1)
 	// (res == -1) => timeStampLive is later, it means the file has been modified outside of Notepad++ - usual case
-	// 
+	//
 	// (res == 1) => timeStampLive (get directly from the file on disk) is earlier than buffer's timestamp - unusual case
 	//               It can happen when user copies a backup of editing file somewhere-else firstly, then modifies the editing file in Notepad++ and saves it.
 	//               Now user copies the backup back to erase the modified editing file outside Notepad++ (via Explorer).
@@ -544,7 +550,7 @@ bool Buffer::checkFileState() // returns true if the status has been changed (it
 		LONG res = CompareFileTime(&_timeStamp, &attributes.ftLastWriteTime);
 		if (res == -1 || res == 1)
 			// (res == -1) => attributes.ftLastWriteTime is later, it means the file has been modified outside of Notepad++ - usual case
-			// 
+			//
 			// (res == 1)  => The timestamp get directly from the file on disk is earlier than buffer's timestamp - unusual case
 			//                It can happen when user copies a backup of editing file somewhere-else firstly, then modifies the editing file in Notepad++ and saves it.
 			//                Now user copies the backup back to erase the modified editing file outside Notepad++ (via Explorer).
@@ -1510,6 +1516,39 @@ static std::string encodeForUacSave(const char* buf, size_t len, UniMode mode, i
 	return out;
 }
 
+static std::wstring CreateGuidString()
+{
+	GUID guid{};
+	if (FAILED(::CoCreateGuid(&guid)))
+		return L"";
+
+	wchar_t guidString[40]{};
+	if (!::StringFromGUID2(guid, guidString, ARRAYSIZE(guidString)))
+		return L"";
+
+	return guidString;
+}
+
+static bool CreateMappingSecurityAttributes(SECURITY_ATTRIBUTES& sa, PSECURITY_DESCRIPTOR& pSD)
+{
+	// OW ... OWNER RIGHTS (removes the implicit WRITE_DAC of the owner)
+	// BA ... BUILTIN\Administrators
+	// 0x0004 ... SECTION_MAP_READ
+	LPCWSTR sddl =
+		L"D:P"
+		L"(A;;0x0004;;;OW)"
+		L"(A;;0x0004;;;BA)";
+
+	if (!::ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, SDDL_REVISION_1, &pSD, nullptr))
+		return false;
+
+	sa.nLength = sizeof(sa);
+	sa.lpSecurityDescriptor = pSD;
+	sa.bInheritHandle = FALSE;
+	return true;
+}
+
+
 std::mutex save_mutex;
 
 SavingStatus FileManager::saveBuffer(BufferID id, const wchar_t* filename, bool isCopy)
@@ -1658,15 +1697,58 @@ SavingStatus FileManager::saveBuffer(BufferID id, const wchar_t* filename, bool 
 
 	if (uacSaveMode)
 	{
+		// Default Windows UAC "runas" uses the same user account with elevated token,
+		// while the possible Administrator Protection (AP) mode uses a separate,
+		// system-managed administrator account, with a different SID and separate user profile.
+		//
+		// With the possible AP mode active, we cannot assume that the current and elevated processes
+		// will have identical user SIDs. Thus we cannot use OpenProcess WINAPI with PROCESS_DUP_HANDLE
+		// higher access right in AP mode from within the elevated Notepad++ child instance
+		// (it cannot cross the security barrier in that mode).
+		//
+		// Solution:
+		// - using of a uniquely named filemapping object instead of unnamed (that way we do not have to pass/duplicate HANDLEs)
+		// - using of a read-only DACL (owner and administrators only), set already at the creation (works both for the ordinary UAC elevations and the AP)
+		// - the same notepad++.exe module is still checked from the elevated child as before via OpenProcess, since we can drop the use of the PROCESS_DUP_HANDLE now
+
+		std::wstring onetimeGuid = CreateGuidString();
+		if (onetimeGuid.empty())
+		{
+			_pscratchTilla->execute(SCI_SETDOCPOINTER, 0, _scratchDocDefault);
+			return SavingStatus::SaveOpenFailed;
+		}
+		std::wstring uniqueMappingName = NPP_MAPPING_PREFIX + onetimeGuid;
+
+		SECURITY_ATTRIBUTES sa{};
+		PSECURITY_DESCRIPTOR pSD = nullptr;
+		if (!CreateMappingSecurityAttributes(sa, pSD))
+		{
+			_pscratchTilla->execute(SCI_SETDOCPOINTER, 0, _scratchDocDefault);
+			return SavingStatus::SaveOpenFailed;
+		}
+
 		// set mapSize to at least 1, otherwise CreateFileMappingW will fail with ERROR_FILE_INVALID
 		const size_t mapSize = (std::max)(fileContentSaveUAC.size(), static_cast<size_t>(1));
 
-		HANDLE hMap = ::CreateFileMappingW(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, static_cast<DWORD>((uint64_t)mapSize >> 32), static_cast<DWORD>(mapSize), NULL);
+		HANDLE hMap = ::CreateFileMappingW(INVALID_HANDLE_VALUE, &sa, PAGE_READWRITE,
+			static_cast<DWORD>((uint64_t)mapSize >> 32), static_cast<DWORD>(mapSize), uniqueMappingName.c_str());
+
+		const bool alreadyExists = (hMap != NULL) && (::GetLastError() == ERROR_ALREADY_EXISTS);
+
+		::LocalFree(pSD);
+		pSD = nullptr;
 
 		if (!hMap)
 		{
 			_pscratchTilla->execute(SCI_SETDOCPOINTER, 0, _scratchDocDefault);
 			 return SavingStatus::SaveOpenFailed;
+		}
+
+		if (alreadyExists) // somebody else has created an object with that name before us, do not use it
+		{
+			::CloseHandle(hMap);
+			_pscratchTilla->execute(SCI_SETDOCPOINTER, 0, _scratchDocDefault);
+			return SavingStatus::SaveOpenFailed;
 		}
 
 		void* p = ::MapViewOfFile(hMap, FILE_MAP_WRITE, 0, 0, mapSize);
@@ -1679,6 +1761,9 @@ SavingStatus FileManager::saveBuffer(BufferID id, const wchar_t* filename, bool 
 
 		memcpy(p, fileContentSaveUAC.data(), fileContentSaveUAC.size());
 		::UnmapViewOfFile(p);
+		p = nullptr;
+
+
 
 		// from here on, nobody (including a same-user attacker) can obtain write access to the section
 		HANDLE hMapRO = NULL;
@@ -1687,18 +1772,21 @@ SavingStatus FileManager::saveBuffer(BufferID id, const wchar_t* filename, bool 
 			_pscratchTilla->execute(SCI_SETDOCPOINTER, 0, _scratchDocDefault);
 			return SavingStatus::SaveOpenFailed;
 		}
+		hMap = NULL;
 
 		// elevated saving/overwriting of the original file by the help of Memory Mapped File and UAC prompt
 		// (notepad++.exe #UAC-SAVE# dest_file_path mapHandle fileContent2SaveLength)
-		wstring strCmdLineParams = NPP_UAC_SAVE_SIGN;
+		std::wstring strCmdLineParams = NPP_UAC_SAVE_SIGN;
 		strCmdLineParams += L" \"";
 		strCmdLineParams += fullpath;
 		strCmdLineParams += L"\" ";
-		strCmdLineParams += std::to_wstring((uintptr_t)hMapRO) + L" ";
-		strCmdLineParams += std::to_wstring(fileContentSaveUAC.size());
+		strCmdLineParams += std::to_wstring(fileContentSaveUAC.size()) + L" ";
+		strCmdLineParams += onetimeGuid;
 
 		DWORD dwNppUacOpError = invokeNppUacOp(strCmdLineParams);
-		::CloseHandle(hMapRO);
+
+		::CloseHandle(hMapRO); // last closed handle released the mapped object memory
+		hMapRO = NULL;
 
 		if (dwNppUacOpError != NO_ERROR)
 		{
