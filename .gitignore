@@ -166,3 +166,8 @@ PowerEditor/src/MISC/md5/RCa06792
 *.db
 *.sln
 *.opendb
+# Local project management tools
+/FIRG/
+/Shared-Project-State-Manager/
+/AGENTS.md
+/.github/workflows/firg.yml
