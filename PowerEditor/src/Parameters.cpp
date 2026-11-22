@@ -1571,6 +1571,43 @@ bool NppParameters::load()
 	pathAppend(_userDefineLangPath, L"userDefineLang.xml");
 	pathAppend(_userDefineLangsFolderPath, L"userDefineLangs");
 
+	// Self-heal: ensure default userDefineLangs (e.g. Markdown) are copied to user's AppData if missing
+	if (_userPath != _nppPath)
+	{
+		std::wstring defaultUdlDir(_nppPath);
+		pathAppend(defaultUdlDir, L"userDefineLangs");
+		if (doesDirectoryExist(defaultUdlDir.c_str()))
+		{
+			if (!doesDirectoryExist(_userDefineLangsFolderPath.c_str()))
+			{
+				::CreateDirectory(_userDefineLangsFolderPath.c_str(), nullptr);
+			}
+
+			std::wstring filterPath = defaultUdlDir;
+			pathAppend(filterPath, L"*.xml");
+			WIN32_FIND_DATA foundData;
+			HANDLE hFind = ::FindFirstFile(filterPath.c_str(), &foundData);
+			if (hFind != INVALID_HANDLE_VALUE)
+			{
+				do
+				{
+					if (!(foundData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+					{
+						std::wstring srcFile = defaultUdlDir;
+						pathAppend(srcFile, foundData.cFileName);
+						std::wstring destFile = _userDefineLangsFolderPath;
+						pathAppend(destFile, foundData.cFileName);
+						if (!doesFileExist(destFile.c_str()))
+						{
+							::CopyFile(srcFile.c_str(), destFile.c_str(), FALSE);
+						}
+					}
+				} while (::FindNextFile(hFind, &foundData));
+				::FindClose(hFind);
+			}
+		}
+	}
+
 	std::vector<std::wstring> udlFiles;
 	getFilesInFolder(udlFiles, L"*.xml", _userDefineLangsFolderPath);
 
