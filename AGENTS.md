@@ -7,6 +7,12 @@
 - Keep project-owned version declarations, release documentation, build outputs, and package names consistent with the applicable R-E-I identifier. Preserve third-party component versions and historical references as provenance.
 - Where Windows requires four numeric version fields, represent `vYYYY.MM.DD.NN` as `YYYY,MM,DD,NN` in numeric resources and retain the canonical zero-padded identifier in displayed strings. Verify platform-specific limits and update mechanisms before changing their version comparisons.
 
+## Release Naming And Description
+
+- Set each GitHub Release name to the application name followed by its independent release identifier, for example `Notepad++ v2026.11.15.01`.
+- Begin the release description with a Markdown H1 containing the project name, application name, and identifier in this form: `# ReCodera-AI Community Edition | Notepad++ v2026.11.15.01`.
+- Write release descriptions in the established format of the `v2026.11.15.01` release, retaining its concise change summary, categorized release details, verification evidence, and download information as applicable. Keep the release name, description heading, tag, and project-owned version declarations consistent.
+
 ## Mandatory FIRG Pre-Read And External-Change Safeguard
 
 - Before material work read this file and applicable scoped instructions. For fixes or external integration, read `FIRG/AGENTS.md`, `FIRG/README.md`, and relevant `FIRG/FIX-HISTORY.md` entries before edits or decisions.
