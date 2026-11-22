@@ -479,7 +479,7 @@ private:
 	ScintillaEditView** _ppEditView = nullptr;
 	ScintillaEditView* _pMatchHighlightView = nullptr; // view of the last updateMatchHighlighting()
 	Finder  *_pFinder = nullptr;
-	std::wstring _findResTitle;
+	wchar_t _findResTitle[MAX_PATH] = { '\0' };
 
 	std::vector<Finder*> _findersOfFinder{};
 
@@ -632,6 +632,7 @@ private :
 
 	intptr_t CALLBACK run_dlgProc(UINT message, WPARAM wParam, LPARAM lParam) override;
 	void markSelectedTextInc(bool enable, FindOption *opt = NULL);
+	bool isCurrentBufSearchChanged();
 };
 
 

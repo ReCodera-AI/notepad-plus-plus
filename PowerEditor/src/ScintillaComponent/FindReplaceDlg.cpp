@@ -848,7 +848,11 @@ Finder::CurrentPosInLineInfo Finder::getCurrentPosInLineInfo(intptr_t currentPos
 		
 		if (range.first <= currentPosInLine && currentPosInLine <= range.second)
 		{
-			if (currentPosInLine == range.first && !hasSel)
+			if (currentPosInLine == range.first && !hasSel && count == 1)
+			{
+				cpili._status = pos_infront;     // I[   ]  : there is no occurrence before c1
+			}
+			else if (currentPosInLine == range.first && !hasSel)
 			{
 				cpili._status = pos_between;
 				cpili.auxiliaryInfo = count - 1; //  c1      c2
@@ -3946,8 +3950,8 @@ void FindReplaceDlg::findAllIn(InWhat op)
 
 		if (!text.empty())
 		{
-			_findResTitle = text;
-			data.pszName = _findResTitle.c_str();
+			wcsncpy_s(_findResTitle, _countof(_findResTitle), text.c_str(), _TRUNCATE);
+			data.pszName = _findResTitle;
 		}
 
 		::SendMessage(_hParent, NPPM_DMMREGASDCKDLG, 0, reinterpret_cast<LPARAM>(&data));
@@ -4093,8 +4097,8 @@ Finder* FindReplaceDlg::createFinder()
 	wstring text = pNativeSpeaker->getLocalizedStrFromID("find-result-caption", L"");
 	if (!text.empty())
 	{
-		_findResTitle = text;
-		data.pszName = _findResTitle.c_str();
+		wcsncpy_s(_findResTitle, _countof(_findResTitle), text.c_str(), _TRUNCATE);
+		data.pszName = _findResTitle;
 	}
 
 	::SendMessage(_hParent, NPPM_DMMREGASDCKDLG, 0, reinterpret_cast<LPARAM>(&data));
