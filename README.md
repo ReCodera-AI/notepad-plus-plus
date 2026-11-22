@@ -31,7 +31,11 @@
 
 Windows application EXEs are available for x64 (AMD64), x86 (Win32), ARM64, x64 GCC, x86 GCC, and x64 Clang, with portable ZIP archives for MSVC x64, x86, and ARM64. Linux and macOS archives are compatibility packages that run the Windows x64 build through Wine or CrossOver; they are not native builds. Windows installers are available for x64, x86, and ARM64. Download packages from the [GitHub Releases page](https://github.com/ReCodera-AI/notepad-plus-plus/releases).
 
-The Windows application and file properties display the same independent release identifier as the tag. The Notepad++ plug-in API version remains at its upstream-compatible value. See the [release notes](docs/releases/v2026.11.22.02.md) and [build instructions](BUILD.md).
+The Windows application and file properties display the same independent release identifier as the tag. The Notepad++ plug-in API version remains at its upstream-compatible value. See the [release notes](docs/releases/v2026.11.22.02.md), [build instructions](BUILD.md), and the [Help & FAQ Portal](docs/faq/README.md).
+
+## Help, FAQ & Troubleshooting
+
+For solutions to common issues (such as Markdown syntax highlighting recovery, clean installation guidance, and language configuration), consult the [ReCodera-AI Knowledge Base & FAQ](docs/faq/README.md).
 
 ## Attribution And License
 
