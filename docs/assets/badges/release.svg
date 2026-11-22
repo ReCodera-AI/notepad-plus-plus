@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="185" height="24" viewBox="0 0 185 24" role="img" aria-label="Release: v2026.11.22.01">
+<svg xmlns="http://www.w3.org/2000/svg" width="185" height="24" viewBox="0 0 185 24" role="img" aria-label="Release: v2026.11.22.02">
   <defs><clipPath id="badge"><rect width="185" height="24" rx="3"/></clipPath></defs>
   <g clip-path="url(#badge)"><rect width="48" height="24" fill="#555"/><rect x="48" width="137" height="24" fill="#087ec4"/></g>
   <path d="M48 2v20" stroke="#fff" stroke-opacity=".18"/>
   <text x="24" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="600" fill="#fff">Release</text>
-  <text x="116.5" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="700" fill="#fff">v2026.11.22.01</text>
+  <text x="116.5" y="16" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="11" font-weight="700" fill="#fff">v2026.11.22.02</text>
 </svg>

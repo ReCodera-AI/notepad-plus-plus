@@ -19,17 +19,18 @@
 
 //************ Notepad++ version **************************
 
-#define NOTEPAD_PLUS_VERSION L"Notepad++ v2026.11.22.01"
+#define NOTEPAD_PLUS_VERSION L"Notepad++ v2026.11.22.02"
 
 // The plug-in API version remains at the upstream-compatible value for ABI compatibility.
 // ex : #define VERSION_VALUE L"5.63\0"
 #define VERSION_INTERNAL_VALUE L"8.991\0"
 
-#define VERSION_PRODUCT_VALUE L"2026.11.22.01\0"
-#define VERSION_DIGITALVALUE 2026, 11, 22, 1
+#define VERSION_PRODUCT_VALUE L"2026.11.22.02\0"
+#define VERSION_DIGITALVALUE 2026, 11, 22, 2
 
 //**********************************************************
 
+#define RECODERA_PROJECT_URL L"https://github.com/ReCodera-AI/notepad-plus-plus"
 #define INFO_URL L"https://notepad-plus-plus.org/update/getDownloadUrl.php"
 #define FORCED_DOWNLOAD_DOMAIN L"https://github.com/notepad-plus-plus/notepad-plus-plus/"
 
